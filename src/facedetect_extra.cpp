@@ -30,8 +30,7 @@ int main( int argc, const char** argv )
         return -1;
     }
 
-    if(!capture.open("video.mp4")) // para testar com um video
-    //if(!capture.open(0)) // para testar com a webcam
+    if(!capture.open(0)) // para testar com um video //if(!capture.open(0)) // para testar com a webcam
     {
         cout << "Capture from camera #0 didn't work" << endl;
         return 1;
@@ -126,18 +125,18 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     
 
     // Desenha uma imagem
-    Mat purple_forest = cv::imread("clareira1.png", IMREAD_UNCHANGED);
+    Mat purple_forest = cv::imread("../data/clareira1.png", IMREAD_UNCHANGED);
     static int px = 1;
     drawTransparency(smallImg, purple_forest, px++, 150);
     printf("orang::width: %d, height=%d\n", purple_forest.cols, purple_forest.rows );
-}
+
     // Desenha quadrados com transparencia
    // double alpha = 0.3;
    // drawTransRect(smallImg, Scalar(0,255,0), alpha, Rect(  0, 0, 200, 200));
     //drawTransRect(smallImg, Scalar(255,0,0), alpha, Rect(200, 0, 200, 200));
 
     // Desenha um texto
-    Scalar color = Scalar(0,0,255);
+    color = Scalar(0,0,255);
     putText	(smallImg, "TESTE:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
 
     // Desenha o frame na tela
