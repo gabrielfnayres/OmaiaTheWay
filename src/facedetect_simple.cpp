@@ -3,9 +3,17 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/videoio.hpp"
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 using namespace cv;
+
+int aux = 1;
+int auy = 1;
+int x = 6;
+int y = 6;
+double vida = 100000;
 
 void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
 
@@ -20,7 +28,7 @@ int main( int argc, const char** argv )
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 0.000005; // usar 1, 2, 4.
+    scale = 2; // usar 1, 2, 4.
     if (scale < 1)
         scale = 1;
     tryflip = true;
@@ -30,7 +38,7 @@ int main( int argc, const char** argv )
         return -1;
     }
 
-    if(!capture.open(0)) // para testar com um video
+    if(!capture.open("../data/video.mp4")) // para testar com um video
     //if(!capture.open(0)) // para testar com a webcam
     {
         cout << "Capture from camera #0 didn't work" << endl;
@@ -57,11 +65,44 @@ int main( int argc, const char** argv )
     return 0;
 }
 
+/**
+ * @brief Draws a transparent image over a frame Mat.
+ * 
+ * @param frame the frame where the transparent image will be drawn
+ * @param transp the Mat image with transparency, read from a PNG image, with the IMREAD_UNCHANGED flag
+ * @param xPos x position of the frame image where the image will start.
+ * @param yPos y position of the frame image where the image will start.
+ */
+void drawTransparency(Mat frame, Mat transp, int xPos, int yPos) {
+    Mat mask;
+    vector<Mat> layers;
+
+    split(transp, layers); // seperate channels
+    Mat rgb[3] = { layers[0],layers[1],layers[2] };
+    mask = layers[3]; // png's alpha channel used as mask
+    merge(rgb, 3, transp);  // put together the RGB channels, now transp insn't transparent 
+    transp.copyTo(frame.rowRange(yPos, yPos + transp.rows).colRange(xPos, xPos + transp.cols), mask);
+}
+
+/**
+ * @brief Draws a transparent rect over a frame Mat.
+ * 
+ * @param frame the frame where the transparent image will be drawn
+ * @param color the color of the rect
+ * @param alpha transparence level. 0 is 100% transparent, 1 is opaque.
+ * @param regin rect region where the should be positioned
+ */
+void drawTransRect(Mat frame, Scalar color, double alpha, Rect region) {
+    Mat roi = frame(region);
+    Mat rectImg(roi.size(), CV_8UC3, color); 
+    addWeighted(rectImg, alpha, roi, 1.0 - alpha , 0, roi); 
+}
+
 void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
 {
     double t = 0;
     vector<Rect> faces;
-    Mat smallImg, gray;
+    Mat gray, smallImg;
     Scalar color = Scalar(255,0,0);
 
     double fx = 1 / scale;
@@ -81,15 +122,65 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
         Size(40, 40) );
     t = (double)getTickCount() - t;
     printf( "detection time = %g ms\n", t*1000/getTickFrequency());
+
+    
+
+ 
+     x = 1+rand()%532;
+    y = 1+rand()%390;
+    
+    // Desenha uma imagem
+    Mat orange = cv::imread("../data/orange.png", IMREAD_UNCHANGED);
+    Rect orangeRect = Rect(y, x, orange.cols, orange.rows);
+    drawTransparency(smallImg, orange, x, y);
+    printf("orang::width: %d, height=%d\n", orange.cols, orange.rows);
+    //x+=(rx*aux);
+   // y+=(ry*auy);
+  
+
+    if((x > 532)||(x < 5))
+    {
+        aux = -aux;
+    
+    }
+
+    if((y > 390)||(y < 5))
+    {
+        auy = -auy;
+      
+    }
+
+   
+
     // PERCORRE AS FACES ENCONTRADAS
     for ( size_t i = 0; i < faces.size(); i++ )
     {
         Rect r = faces[i];
-        rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)),
-                    Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
-                    color, 3);
+        if((r & orangeRect).area() > 10)
+            color = Scalar(0,0,255);
+        else
+        {   
+            /*vida-=10;
+            cout << "TÃ¡ dando dano!" << endl;
+            if(vida < 0)
+            {
+                putText	(smallImg, "GAME OVER!", Point(300, 200), FONT_HERSHEY_PLAIN, 2, Scalar(254,254,254)); // fonte
+            }*/
+            color = Scalar(255,0,0);
+        }
+        rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
     }
 
+    /* Desenha quadrados com transparencia
+    double alpha = 0.3;
+    drawTransRect(smallImg, Scalar(0,255,0), alpha, Rect(  0, 0, 200, 200));
+    drawTransRect(smallImg, Scalar(255,0,0), alpha, Rect(200, 0, 200, 200));*/
+
+    // Desenha um texto
+    color = Scalar(0,0,255);
+    putText	(smallImg, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
+
     // Desenha o frame na tela
-    imshow( "result", smallImg );
+    imshow("result", smallImg );
+    printf("image::width: %d, height=%d\n", smallImg.cols, smallImg.rows );
 }
