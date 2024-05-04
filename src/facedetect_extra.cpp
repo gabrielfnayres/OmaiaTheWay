@@ -36,7 +36,7 @@ int main( int argc, const char** argv )
         return -1;
     }
 
-    if(!capture.open(0)) // para testar com um video
+    if(!capture.open("../data/video.mp4")) // para testar com um video
     //if(!capture.open(0)) // para testar com a webcam
     {
         cout << "Capture from camera #0 didn't work" << endl;
@@ -122,7 +122,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     printf( "detection time = %g ms\n", t*1000/getTickFrequency());
     
     // Desenha uma imagem
-    Mat orange = cv::imread("orange.png", IMREAD_UNCHANGED);
+    Mat orange = cv::imread("../data/orange.png", IMREAD_UNCHANGED);
     Rect orangeRect = Rect(y, x, orange.cols, orange.rows);
     drawTransparency(smallImg, orange, x, y);
     printf("orang::width: %d, height=%d\n", orange.cols, orange.rows);
@@ -147,12 +147,12 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
             color = Scalar(0,0,255);
         else
         {   
-            vida-=10;
+            /*vida-=10;
             cout << "Tá dando dano!" << endl;
             if(vida < 0)
             {
                 putText	(smallImg, "GAME OVER!", Point(300, 200), FONT_HERSHEY_PLAIN, 2, Scalar(254,254,254)); // fonte
-            }
+            }*/
             color = Scalar(255,0,0);
         }
         rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
