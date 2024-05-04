@@ -7,6 +7,12 @@
 using namespace std;
 using namespace cv;
 
+int aux = 1;
+int auy = 1;
+int x = 6;
+int y = 6;
+double vida = 100000;
+
 void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
 
 string cascadeName;
@@ -20,7 +26,7 @@ int main( int argc, const char** argv )
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 2; // usar 1, 2, 4.
+    scale = 1; // usar 1, 2, 4.
     if (scale < 1)
         scale = 1;
     tryflip = true;
@@ -30,7 +36,8 @@ int main( int argc, const char** argv )
         return -1;
     }
 
-    if(!capture.open(0)) // para testar com um video //if(!capture.open(0)) // para testar com a webcam
+    if(!capture.open(0)) // para testar com um video
+    //if(!capture.open(0)) // para testar com a webcam
     {
         cout << "Capture from camera #0 didn't work" << endl;
         return 1;
@@ -56,13 +63,13 @@ int main( int argc, const char** argv )
     return 0;
 }
 
-
-  /*@brief //Draws a transparent image over a frame Mat.
-  
-  @param //frame the frame where the transparent image will be drawn
-  @param //transp the Mat image with transparency, read from a PNG image, with the IMREAD_UNCHANGED flag
-  @param //xPos x position of the frame image where the image will start.
-  @param //yPos y position of the frame image where the image will start.
+/**
+ * @brief Draws a transparent image over a frame Mat.
+ * 
+ * @param frame the frame where the transparent image will be drawn
+ * @param transp the Mat image with transparency, read from a PNG image, with the IMREAD_UNCHANGED flag
+ * @param xPos x position of the frame image where the image will start.
+ * @param yPos y position of the frame image where the image will start.
  */
 void drawTransparency(Mat frame, Mat transp, int xPos, int yPos) {
     Mat mask;
@@ -113,31 +120,52 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
         Size(40, 40) );
     t = (double)getTickCount() - t;
     printf( "detection time = %g ms\n", t*1000/getTickFrequency());
+    
+    // Desenha uma imagem
+    Mat orange = cv::imread("orange.png", IMREAD_UNCHANGED);
+    Rect orangeRect = Rect(y, x, orange.cols, orange.rows);
+    drawTransparency(smallImg, orange, x, y);
+    printf("orang::width: %d, height=%d\n", orange.cols, orange.rows);
+    x+=(5*aux);
+    y+=(5*auy);
+
+    if((x > 532)||(x < 5))
+    {
+        aux = -aux;
+    }
+
+    if((y > 390)||(y < 5))
+    {
+        auy = -auy;
+    }
+
     // PERCORRE AS FACES ENCONTRADAS
     for ( size_t i = 0; i < faces.size(); i++ )
     {
         Rect r = faces[i];
-        rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)),
-                    Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
-                    color, 3);
+        if((r & orangeRect).area() > 10)
+            color = Scalar(0,0,255);
+        else
+        {   
+            vida-=10;
+            cout << "Tá dando dano!" << endl;
+            if(vida < 0)
+            {
+                putText	(smallImg, "GAME OVER!", Point(300, 200), FONT_HERSHEY_PLAIN, 2, Scalar(254,254,254)); // fonte
+            }
+            color = Scalar(255,0,0);
+        }
+        rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
     }
 
-    
-
-    // Desenha uma imagem
-    Mat purple_forest = cv::imread("../data/clareira1.png", IMREAD_UNCHANGED);
-    static int px = 1;
-    drawTransparency(smallImg, purple_forest, px++, 150);
-    printf("orang::width: %d, height=%d\n", purple_forest.cols, purple_forest.rows );
-
-    // Desenha quadrados com transparencia
-   // double alpha = 0.3;
-   // drawTransRect(smallImg, Scalar(0,255,0), alpha, Rect(  0, 0, 200, 200));
-    //drawTransRect(smallImg, Scalar(255,0,0), alpha, Rect(200, 0, 200, 200));
+    /* Desenha quadrados com transparencia
+    double alpha = 0.3;
+    drawTransRect(smallImg, Scalar(0,255,0), alpha, Rect(  0, 0, 200, 200));
+    drawTransRect(smallImg, Scalar(255,0,0), alpha, Rect(200, 0, 200, 200));*/
 
     // Desenha um texto
     color = Scalar(0,0,255);
-    putText	(smallImg, "TESTE:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
+    putText	(smallImg, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
 
     // Desenha o frame na tela
     imshow("result", smallImg );
