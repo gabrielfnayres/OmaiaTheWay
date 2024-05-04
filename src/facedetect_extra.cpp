@@ -26,7 +26,7 @@ int main( int argc, const char** argv )
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 2; // usar 1, 2, 4.
+    scale = 1; // usar 1, 2, 4.
     if (scale < 1)
         scale = 1;
     tryflip = true;
@@ -36,7 +36,7 @@ int main( int argc, const char** argv )
         return -1;
     }
 
-    if(!capture.open("../data/video.mp4")) // para testar com um video
+    if(!capture.open(0)) // para testar com um video
     //if(!capture.open(0)) // para testar com a webcam
     {
         cout << "Capture from camera #0 didn't work" << endl;
@@ -123,7 +123,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     
     // Desenha uma imagem
     Mat orange = cv::imread("../data/orange.png", IMREAD_UNCHANGED);
-    Rect orangeRect = Rect(y, x, orange.cols, orange.rows);
+    Rect orangeRect = Rect(y, x, orange.cols -30, orange.rows-30);
     drawTransparency(smallImg, orange, x, y);
     printf("orang::width: %d, height=%d\n", orange.cols, orange.rows);
     x+=(5*aux);

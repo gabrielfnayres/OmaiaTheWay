@@ -13,6 +13,7 @@ int aux = 1;
 int auy = 1;
 int x = 6;
 int y = 6;
+int c = 0;
 double vida = 100000;
 
 void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
@@ -123,54 +124,43 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     t = (double)getTickCount() - t;
     printf( "detection time = %g ms\n", t*1000/getTickFrequency());
 
-    
-
- 
-     x = 1+rand()%532;
-    y = 1+rand()%390;
-    
     // Desenha uma imagem
-    Mat orange = cv::imread("../data/orange.png", IMREAD_UNCHANGED);
-    Rect orangeRect = Rect(y, x, orange.cols, orange.rows);
-    drawTransparency(smallImg, orange, x, y);
-    printf("orang::width: %d, height=%d\n", orange.cols, orange.rows);
+    
+    x = 1+rand()%532;
+    y = 1+rand()%390;
+    c++;
     //x+=(rx*aux);
-   // y+=(ry*auy);
-  
+    // y+=(ry*auy);
 
     if((x > 532)||(x < 5))
     {
         aux = -aux;
-    
     }
 
     if((y > 390)||(y < 5))
     {
         auy = -auy;
-      
     }
 
-   
+    cout << c << endl;
 
-    // PERCORRE AS FACES ENCONTRADAS
-    for ( size_t i = 0; i < faces.size(); i++ )
+    if(c > 150 && c < 200)
     {
-        Rect r = faces[i];
-        if((r & orangeRect).area() > 10)
-            color = Scalar(0,0,255);
-        else
-        {   
-            /*vida-=10;
-            cout << "TÃ¡ dando dano!" << endl;
-            if(vida < 0)
-            {
-                putText	(smallImg, "GAME OVER!", Point(300, 200), FONT_HERSHEY_PLAIN, 2, Scalar(254,254,254)); // fonte
-            }*/
-            color = Scalar(255,0,0);
-        }
-        rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
-    }
+        Mat orange = cv::imread("../data/orange.png", IMREAD_UNCHANGED);
+        Rect orangeRect = Rect(y, x, orange.cols, orange.rows);
+        drawTransparency(smallImg, orange, x, y);
+        printf("orang::width: %d, height=%d\n", orange.cols, orange.rows);
 
+        for ( size_t i = 0; i < faces.size(); i++ )
+        {
+           Rect r = faces[i];
+            if((r & orangeRect).area() > 10)
+                color = Scalar(0,0,255);
+            else
+                color = Scalar(255,0,0);
+            rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
+        }
+    }
     /* Desenha quadrados com transparencia
     double alpha = 0.3;
     drawTransRect(smallImg, Scalar(0,255,0), alpha, Rect(  0, 0, 200, 200));
