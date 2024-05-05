@@ -194,6 +194,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     {
         Rect r = faces[i];
         if((r & orangeRect).area() > 10)
+            
             color = Scalar(0,0,255);
         else
         {   
