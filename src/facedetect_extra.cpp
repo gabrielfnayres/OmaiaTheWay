@@ -4,19 +4,17 @@
 #include "opencv2/videoio.hpp"
 #include <iostream>
 
-
-
-
 using namespace std;
 using namespace cv;
 
 class Menu
 { 
     public:
-      void iniciarhistoria(Mat smallImg){
-        putText	(smallImg, "Para iniciar o jogo clique em Y:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(255,0,0)); // fonte
-        putText	(smallImg, "Para sair do jogo clique em Q:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(255,0,0)); // fonte
-    }
+        void iniciarHistoria(Mat smallImg)
+        {
+            putText	(smallImg, "Para iniciar o jogo clique em Y:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(255,0,0)); // fonte
+            putText	(smallImg, "Para sair do jogo clique em Q:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, Scalar(255,0,0)); // fonte
+        }
 };
 
 int aux = 1;
@@ -27,10 +25,6 @@ double vida = 100000;
 char resp;
  //int points = 10;
  //int fra = 20;
-<<<<<<< HEAD
-=======
- 
->>>>>>> 2c35d936692620a6e8a72e4956c89715fc9ae0a9
 
 void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
 
@@ -38,11 +32,7 @@ string cascadeName;
 
 int main( int argc, const char** argv )
 {
-<<<<<<< HEAD
-      Menu menu;
-=======
-     Menu menu;
->>>>>>> 2c35d936692620a6e8a72e4956c89715fc9ae0a9
+    Menu menu;
     VideoCapture capture;
     Mat frame;
     bool tryflip;
@@ -70,32 +60,25 @@ int main( int argc, const char** argv )
     if( capture.isOpened() ) {
         cout << "Video capturing has been started ..." << endl;
 
-        cin>> resp;
-               if(resp == 121){
-                 while (1)
+        cin >> resp;
+        if(resp == 121)
         {
-            capture >> frame;
-            if( frame.empty() )
-                break;
+            while (1)
+            {
+                capture >> frame;
+                if( frame.empty() )
+                    break;
 
-           char c = (char)waitKey(10);
-            if( c == 27 || c == 'q' || c == 'Q' )
-                break;
+                char c = (char)waitKey(10);
+                if( c == 27 || c == 'q' || c == 'Q' )
+                    break;
 
-<<<<<<< HEAD
-             menu.iniciarhistoria();
-            cin>> resp;
-            if(resp == 121){
-               detectAndDraw( frame, cascade, scale, tryflip );
-               }
-            
-           
-=======
-                detectAndDraw( frame, cascade, scale, tryflip );
-
->>>>>>> 2c35d936692620a6e8a72e4956c89715fc9ae0a9
+                //menu.iniciarHistoria();
+                //cin>> resp;
+                //if(resp == 121)
+                    detectAndDraw( frame, cascade, scale, tryflip );            
+             }
         }
-               }
 
        
     }
