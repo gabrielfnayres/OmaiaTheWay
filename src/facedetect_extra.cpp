@@ -119,6 +119,24 @@ void drawTransRect(Mat frame, Scalar color, double alpha, Rect region) {
     addWeighted(rectImg, alpha, roi, 1.0 - alpha , 0, roi); 
 }
 
+void drawCircularImage(Mat bg, Mat dest, int &shift) {
+    if (shift > dest.cols)
+        shift = 0;
+    printf("bg::width: %d, height=%d\n", bg.cols, bg.rows );
+    printf("smallImg::width: %d, height=%d\n", dest.cols, dest.rows );
+    Rect crop1(shift, 0, bg.cols - shift, bg.rows);
+    Mat bg1 = bg(crop1);
+    Rect crop2(0, 0, shift, bg.rows);
+    Mat bg2 = bg(crop2);
+    printf("bg1::width: %d, height=%d\n", bg1.cols, bg1.rows );
+    printf("bg2::width: %d, height=%d\n", bg2.cols, bg2.rows );
+    printf("shift = %d \n", shift);
+    if (bg1.cols > 0)
+        bg1.copyTo(dest.rowRange(0, bg1.rows).colRange(0, bg1.cols));
+    if (bg2.cols > 0)
+	bg2.copyTo(dest(cv::Rect(dest.cols - shift, 0, bg2.cols, bg2.rows)));
+}
+
 void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
 {
     double t = 0;
@@ -134,6 +152,13 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     equalizeHist( gray, gray );
 
     t = (double)getTickCount();
+    static int x = 0;
+    // Desenha BG
+    Mat bgbig = cv::imread("flap.png", IMREAD_UNCHANGED);
+    Mat bg;
+    resize( bgbig, bg, Size(smallImg.cols, smallImg.rows), 1, 1, INTER_LINEAR_EXACT );
+    drawCircularImage(bg, smallImg, x);
+    x+=20;
 
     cascade.detectMultiScale( gray, faces,
         1.3, 2, 0
