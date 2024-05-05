@@ -53,7 +53,9 @@ int main( int argc, const char** argv )
     if( capture.isOpened() ) {
         cout << "Video capturing has been started ..." << endl;
 
-        while (1)
+        cin>> resp;
+               if(resp == 121){
+                 while (1)
         {
             capture >> frame;
             if( frame.empty() )
@@ -63,15 +65,12 @@ int main( int argc, const char** argv )
             if( c == 27 || c == 'q' || c == 'Q' )
                 break;
 
-             menu.exibir();
-             
-               cin>> resp;
-               if(resp == 121){
                 detectAndDraw( frame, cascade, scale, tryflip );
-               }
-            
-           
+
         }
+               }
+
+       
     }
 
     return 0;
