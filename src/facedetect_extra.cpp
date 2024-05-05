@@ -3,7 +3,8 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/videoio.hpp"
 #include <iostream>
-#include "Menu.h"
+#include "../includes/Menu.h"
+
 
 using namespace std;
 using namespace cv;
@@ -16,7 +17,7 @@ double vida = 100000;
 char resp;
  //int points = 10;
  //int fra = 20;
- Menu menu;
+ 
 
 void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
 
@@ -24,6 +25,7 @@ string cascadeName;
 
 int main( int argc, const char** argv )
 {
+     Menu menu;
     VideoCapture capture;
     Mat frame;
     bool tryflip;
@@ -64,7 +66,7 @@ int main( int argc, const char** argv )
              menu.exibir();
              
                cin>> resp;
-               if(resp == "Y" || resp == "y"){
+               if(resp == 121){
                 detectAndDraw( frame, cascade, scale, tryflip );
                }
             
