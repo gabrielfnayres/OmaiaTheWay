@@ -1,7 +1,7 @@
 #pragma once
 
-class Menu{
-public:
-char exibir();
-
+class Menu
+{
+    public:
+        char exibir();
 };

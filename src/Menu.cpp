@@ -13,5 +13,4 @@ putText	(smallImg, "Para iniciar o jogo clique em Y:", Point(300, 50), FONT_HERS
 putText	(smallImg, "Para sair do jogo clique em Q:", Point(200, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
 
 
-
 }
