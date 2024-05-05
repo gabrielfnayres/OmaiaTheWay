@@ -3,6 +3,7 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/videoio.hpp"
 #include <iostream>
+#include "Menu.h"
 
 using namespace std;
 using namespace cv;
@@ -12,6 +13,10 @@ int auy = 1;
 int x = 6;
 int y = 6;
 double vida = 100000;
+char resp;
+ //int points = 10;
+ //int fra = 20;
+ Menu menu;
 
 void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
 
@@ -26,7 +31,7 @@ int main( int argc, const char** argv )
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 1; // usar 1, 2, 4.
+    scale = 2; // usar 1, 2, 4.
     if (scale < 1)
         scale = 1;
     tryflip = true;
@@ -52,11 +57,18 @@ int main( int argc, const char** argv )
             if( frame.empty() )
                 break;
 
-            detectAndDraw( frame, cascade, scale, tryflip );
-
-            char c = (char)waitKey(10);
+           char c = (char)waitKey(10);
             if( c == 27 || c == 'q' || c == 'Q' )
                 break;
+
+             menu.exibir();
+             
+               cin>> resp;
+               if(resp == "Y" || resp == "y"){
+                detectAndDraw( frame, cascade, scale, tryflip );
+               }
+            
+           
         }
     }
 
@@ -140,6 +152,8 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     }
 
     // PERCORRE AS FACES ENCONTRADAS
+   
+    
     for ( size_t i = 0; i < faces.size(); i++ )
     {
         Rect r = faces[i];
@@ -147,13 +161,21 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
             color = Scalar(0,0,255);
         else
         {   
-            /*vida-=10;
-            cout << "Tá dando dano!" << endl;
-            if(vida < 0)
-            {
-                putText	(smallImg, "GAME OVER!", Point(300, 200), FONT_HERSHEY_PLAIN, 2, Scalar(254,254,254)); // fonte
-            }*/
-            color = Scalar(255,0,0);
+            //vida-=10;
+
+           //putText	(smallImg, "Vida:", Point(30, 500), FONT_HERSHEY_PLAIN, 2, color); // fonte
+            //for(int i=9; i=!0; i--){
+             //putText	(smallImg, "*", Point(50 + fra, 500), FONT_HERSHEY_PLAIN, 2, color); // fonte
+             //fra= fra+30;
+           // }
+             
+            //points--;
+            //cout << "Tá dando dano!" << endl;
+            //if(vida < 0)
+           // {
+           //     putText	(smallImg, "GAME OVER!", Point(300, 200), FONT_HERSHEY_PLAIN, 2, Scalar(254,254,254)); // fonte
+           // }*/
+            //color = Scalar(255,0,0);
         }
         rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
     }
