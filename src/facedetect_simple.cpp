@@ -257,13 +257,13 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
         //drawTransparency(smallImg, flappy, cvRound(r.x+85),cvRound(r.y+85));
 
-        Rect fac = Rect(cvRound(r.x+85),cvRound(r.y+85), 50, 50);
+        Rect fac = Rect(cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25), 50, 50);
 
         if(((fac & pipeRect1).area() > 1)||((fac & pipeRect2).area() > 1)||((fac & pipeRect3).area() > 1)||((fac & pipeRect4).area() > 1))
         {
             color = Scalar(0,0,255);
             cout << "VOCÊ PERDEU!" << endl;
-            putText	(smallImg, "GAME OVER", Point(240, 200), FONT_HERSHEY_PLAIN,5, Scalar(255,255,255));
+            putText	(smallImg, "GAME OVER", Point(200, 200), FONT_HERSHEY_PLAIN, 3, Scalar(255,255,255));
         }   
 
         else
