@@ -4,7 +4,7 @@
 
 using namespace std;
 
-void exibir(){
+void Menu:: exibir(){
 
 cout << "BEM-VINDO AO FLAPPY BIRD";
 cout << "DIGITE C PARA CONTINUAR";
@@ -13,7 +13,7 @@ cout << "DIGITE Q PARA DESISTIR";
 
 }
 
-char lerResposta(){
+char Menu:: lerResposta(){
  char resp;
 
  cin >> resp;
@@ -21,11 +21,11 @@ char lerResposta(){
  return resp;
 }
 
-void setUsuario(string nomee){
+void Menu:: setUsuario(string nomee){
 nome = nomee;
 
 }
 
-Menu(){
+Menu:: Menu(){
 
-}
+};

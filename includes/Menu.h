@@ -6,7 +6,7 @@ using namespace std;
 class Menu{
 public:
 void exibir();
-void setUsuario();
+void setUsuario(string nomee);
 Menu();
 char lerResposta();
 
