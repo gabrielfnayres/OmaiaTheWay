@@ -31,7 +31,13 @@ string novotexto;
 int pontos;
 
 
+void playlose(){
+    system("hit.wav"); 
+}
 
+void playwins(){
+    system("point.wav"); 
+}
 
 int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
 
@@ -206,21 +212,25 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     {
         x = 600;
         *pont++;
+        playwins();
     }   
     if(x1 == 0)
     {
         x1 = 600;
         *pont++;
+        playwins();
     } 
     if(x2 == 0)
     {
         x2 = 600;
         *pont++;
+        playwins();
     } 
     if(x3 == 0)
     {
         x3 = 600;
         *pont++;
+        playwins();
     } 
 
     for ( size_t i = 0; i < faces.size(); i++ )
@@ -233,10 +243,12 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
             //putText	(smallImg, "GAME OVER", Point(240, 200), FONT_HERSHEY_PLAIN,5, Scalar(255,255,255));
             //return 0;
         }   
-        else
-            color = Scalar(0,0,255);
-            
+        else{
+        color = Scalar(0,0,255);
+        playlose();
         circle( smallImg, Point(cvRound(r.x + r.width-50), cvRound(r.y + r.height-50)), 3, color, 10);
+        }
+            
     }
 
     putText	(smallImg, to_string(*pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
