@@ -24,7 +24,7 @@ int x3 = 600;
 int y_down = 240;
 int y_up = 0;
 int c = 0;
-int *pont = 0;
+int pont = 0;
 fstream stream;
 string texto;
 string novotexto;
@@ -100,10 +100,10 @@ int main( int argc, const char** argv )
 
             t = detectAndDraw( frame, cascade, scale, tryflip );
             cout << "Pontuacao: "<< pont;
-            if(*pont > pontos){
+            if(pont > pontos){
 
                 stream.open("records.txt", ios_base::out);
-                novotexto = to_string(*pont);
+                novotexto = to_string(pont);
                 stream << novotexto;
                 stream.close();
             }
@@ -192,6 +192,10 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     Mat pipe4 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
     Rect pipeRect4 = Rect(y_up, x3, pipe4.rows, pipe4.cols);
 
+    Mat flappy = cv::imread("../data/bird_sprite(1).png");
+    Mat gray2;
+    cvtColor(flappy, gray2, COLOR_BGR2GRAY);
+
 
     c++;
     
@@ -219,26 +223,26 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     if(x == 0)
     {
         x = 600;
-        *pont++;
+        pont++;
 //        playwins();
     }   
     if(x1 == 0)
     {
         x1 = 600;
-        *pont++;
+        pont++;
   //      playwins();
     } 
     if(x2 == 0)
     {
         x2 = 600;
-        *pont++;
+        pont++;
     //    playwins();
     } 
     if(x3 == 0)
     {
         x3 = 600;
 
-        *pont++;
+        pont++;
       //  playwins();
     } 
 
@@ -272,7 +276,7 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
     }
 
-    putText	(smallImg, to_string(*pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
+    putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
 
     // Desenha quadrados com transparencia
     // double alpha = 0.3;
@@ -288,4 +292,3 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
     return 1;
 }
-message.txt
