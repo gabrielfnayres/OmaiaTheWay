@@ -9,14 +9,18 @@
 using namespace std;
 using namespace cv;
 
-int aux = 1;
-int auy = 1;
-int x = 6;
-int y = 6;
+char r;
+int t = 0;
+int x = 600;
+int x1 = 600;
+int x2 = 600;
+int x3 = 600;
+int y_down = 240;
+int y_up = 0;
 int c = 0;
-double vida = 100000;
+int pont = 0;
 
-void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
+int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
 
 string cascadeName;
 
@@ -29,7 +33,7 @@ int main( int argc, const char** argv )
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 2; // usar 1, 2, 4.
+    scale = 1; // usar 1, 2, 4.
     if (scale < 1)
         scale = 1;
     tryflip = true;
@@ -39,7 +43,7 @@ int main( int argc, const char** argv )
         return -1;
     }
 
-    if(!capture.open("../data/video.mp4")) // para testar com um video
+    if(!capture.open(0)) // para testar com um video
     //if(!capture.open(0)) // para testar com a webcam
     {
         cout << "Capture from camera #0 didn't work" << endl;
@@ -55,7 +59,9 @@ int main( int argc, const char** argv )
             if( frame.empty() )
                 break;
 
-            detectAndDraw( frame, cascade, scale, tryflip );
+            t = detectAndDraw( frame, cascade, scale, tryflip );
+            if(t == 0)
+                break;
 
             char c = (char)waitKey(10);
             if( c == 27 || c == 'q' || c == 'Q' )
@@ -99,7 +105,7 @@ void drawTransRect(Mat frame, Scalar color, double alpha, Rect region) {
     addWeighted(rectImg, alpha, roi, 1.0 - alpha , 0, roi); 
 }
 
-void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
+int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
 {
     double t = 0;
     vector<Rect> faces;
@@ -125,52 +131,87 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     printf( "detection time = %g ms\n", t*1000/getTickFrequency());
 
     // Desenha uma imagem
-    
-    x = 1+rand()%532;
-    y = 1+rand()%390;
+    Mat orange = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
+    Rect orangeRect = Rect(y_down, (x-=2), orange.cols, orange.rows);
+    drawTransparency(smallImg, orange, x, y_down);
+    printf("orang::width: %d, height=%d\n", orange.cols, orange.rows);
     c++;
-    //x+=(rx*aux);
-    // y+=(ry*auy);
-
-    if((x > 532)||(x < 5))
+    
+    if(c > 75)
     {
-        aux = -aux;
+        Mat pipe = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
+        Rect pipeRect = Rect(y_up, (x1-=2), pipe.cols, pipe.rows);
+        drawTransparency(smallImg, pipe, x1, y_up);
+        printf("pipe::width: %d, height=%d\n", pipe.cols, pipe.rows);
     }
 
-    if((y > 390)||(y < 5))
+    if(c > 150)
     {
-        auy = -auy;
+        Mat pipe = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
+        Rect pipeRect = Rect(y_down, (x2-=2), pipe.cols, pipe.rows);
+        drawTransparency(smallImg, pipe, x2, y_down);
+        printf("pipe::width: %d, height=%d\n", pipe.cols, pipe.rows);
     }
 
-    cout << c << endl;
-
-    if(c > 150 && c < 200)
+    if(c > 225)
     {
-        Mat orange = cv::imread("../data/orange.png", IMREAD_UNCHANGED);
-        Rect orangeRect = Rect(y, x, orange.cols, orange.rows);
-        drawTransparency(smallImg, orange, x, y);
-        printf("orang::width: %d, height=%d\n", orange.cols, orange.rows);
+        Mat pipe = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
+        Rect pipeRect = Rect(y_up, (x3-=2), pipe.cols, pipe.rows);
+        drawTransparency(smallImg, pipe, x3, y_up);
+        printf("pipe::width: %d, height=%d\n", pipe.cols, pipe.rows);
+    }
 
-        for ( size_t i = 0; i < faces.size(); i++ )
+    if(x == 0)
+    {
+        x = 600;
+        pont++;
+    }   
+    if(x1 == 0)
+    {
+        x1 = 600;
+        pont++;
+    } 
+    if(x2 == 0)
+    {
+        x2 = 600;
+        pont++;
+    } 
+    if(x3 == 0)
+    {
+        x3 = 600;
+        pont++;
+    } 
+
+    for ( size_t i = 0; i < faces.size(); i++ )
+    {
+        Rect r = faces[i];
+        if((r & orangeRect).area() > 10)
         {
-           Rect r = faces[i];
-            if((r & orangeRect).area() > 10)
-                color = Scalar(0,0,255);
-            else
-                color = Scalar(255,0,0);
-            rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
-        }
+            color = Scalar(255,0,0);
+            //cout << "VOCÊ PERDEU!" << endl;
+            //putText	(smallImg, "GAME OVER", Point(240, 200), FONT_HERSHEY_PLAIN,5, Scalar(255,255,255));
+            //return 0;
+        }   
+        else
+            color = Scalar(0,0,255);
+            
+        circle( smallImg, Point(cvRound(r.x + r.width-50), cvRound(r.y + r.height-50)), 3, color, 10);
     }
+
+    putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
+
     /* Desenha quadrados com transparencia
     double alpha = 0.3;
     drawTransRect(smallImg, Scalar(0,255,0), alpha, Rect(  0, 0, 200, 200));
     drawTransRect(smallImg, Scalar(255,0,0), alpha, Rect(200, 0, 200, 200));*/
 
     // Desenha um texto
-    color = Scalar(0,0,255);
-    putText	(smallImg, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
+    //color = Scalar(0,0,255);
+    //putText	(smallImg, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
 
     // Desenha o frame na tela
     imshow("result", smallImg );
     printf("image::width: %d, height=%d\n", smallImg.cols, smallImg.rows );
+
+    return 1;
 }
