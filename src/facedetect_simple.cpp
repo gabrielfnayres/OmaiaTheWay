@@ -140,7 +140,7 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     Rect pipeRect2 = Rect(y_up, x1, pipe2.rows, pipe2.cols);
 
     Mat pipe3 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
-    Rect pipeRect3 = Rect(y_up, x2, pipe3.rows, pipe3.cols);
+    Rect pipeRect3 = Rect(y_down, x2, pipe3.rows, pipe3.cols);
 
     Mat pipe4 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
     Rect pipeRect4 = Rect(y_up, x3, pipe4.rows, pipe4.cols);
@@ -186,14 +186,20 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     {
         x3 = 600;
         pont++;
-    } 
+    }
 
     for ( size_t i = 0; i < faces.size(); i++ )
     {
         Rect r = faces[i];
-        rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
 
-        if(((r & pipeRect1).area() > 10)||((r & pipeRect2).area() > 10)||((r & pipeRect3).area() > 10)||((r & pipeRect4).area() > 10))
+        //cout << "Rectangle - P1: " << Point(cvRound(r.x+60), cvRound(r.y+60)) << endl << endl;
+        //cout << "Rectangle - P2: " << Point(cvRound(r.x+110), cvRound(r.y+110)) << endl << endl;
+
+        Rect pipeRect2 = Rect(y_up, x1, pipe2.rows, pipe2.cols);
+
+        Rect fac = Rect(cvRound(r.y+85),cvRound(r.x+85), 50, 50);
+
+        if(((fac & pipeRect1).area() > 1)||((fac & pipeRect2).area() > 1)||((fac & pipeRect3).area() > 1)||((fac & pipeRect4).area() > 1))
         {
             color = Scalar(0,0,255);
         }   
@@ -201,10 +207,11 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         {
             color = Scalar(255,0,0);
             cout << "VOCÊ PERDEU!" << endl;
-            //putText	(smallImg, "GAME OVER", Point(240, 200), FONT_HERSHEY_PLAIN,5, Scalar(255,255,255));
+            putText	(smallImg, "GAME OVER", Point(240, 200), FONT_HERSHEY_PLAIN,5, Scalar(255,255,255));
             //return 0;
-        }
-            
+        }    
+        rectangle( smallImg, Point(cvRound(r.x+60), cvRound(r.y+60)), Point(cvRound((r.x + 110)), cvRound((r.y + 110))), color, 3);
+
     }
 
     putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
