@@ -109,7 +109,7 @@ int main( int argc, const char** argv )
     
     menu.exibir();
     resp = menu.lerResposta();
-    if(resp != 99 || resp !=67){
+    if(resp != 99 && resp !=67){
 
         //break;
 
