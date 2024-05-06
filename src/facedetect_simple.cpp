@@ -192,10 +192,8 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     Mat pipe4 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
     Rect pipeRect4 = Rect(y_up, x3, pipe4.rows, pipe4.cols);
 
-    Mat flappy = cv::imread("../data/bird_sprite(1).png");
-    Mat gray2;
-    cvtColor(flappy, gray2, COLOR_BGR2GRAY);
-
+    Mat flappy = cv::imread("../data/bird_sprite(1)(1).png", IMREAD_UNCHANGED);
+    
 
     c++;
     
@@ -250,16 +248,18 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     for ( size_t i = 0; i < faces.size(); i++ )
     {
         Rect r = faces[i];
-
         //cout << "Rectangle - P1: " << Point(cvRound(r.x+60), cvRound(r.y+60)) << endl << endl;
         //cout << "Rectangle - P2: " << Point(cvRound(r.x+110), cvRound(r.y+110)) << endl << endl;
 
         Rect pipeRect2 = Rect(y_up, x1, pipe2.rows, pipe2.cols);
 
         Rect fac = Rect(cvRound(r.y+85),cvRound(r.x+85), 50, 50);
+              
+  
 
         if(((fac & pipeRect1).area() > 1)||((fac & pipeRect2).area() > 1)||((fac & pipeRect3).area() > 1)||((fac & pipeRect4).area() > 1))
         {
+          
             color = Scalar(0,0,255);
         }   
 
@@ -273,7 +273,9 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         
         }
         rectangle( smallImg, Point(cvRound(r.x+60), cvRound(r.y+60)), Point(cvRound((r.x + 110)), cvRound((r.y + 110))), color, 3);
-
+        if(cvRound(r.x + 85) < 300 && cvRound(r.y + 85) < 300){
+          drawTransparency(smallImg, flappy, cvRound(r.x + 85), cvRound(r.y + 85));
+        }
     }
 
     putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
