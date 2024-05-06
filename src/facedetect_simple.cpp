@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
+#include <SFML/Audio.hpp>
 
 using namespace std;
 using namespace cv;
@@ -32,11 +33,25 @@ int pontos;
 
 
 void playlose(){
-    system("hit.wav"); 
+    sf::SoundBuffer buffer;
+  if (!buffer.loadFromFile("hit.wav")) {
+    return 1;  
+  }
+
+  sf::Sound sound(buffer);
+  sound.play();
+  sf::sleep(sf::seconds(1)); 
 }
 
 void playwins(){
-    system("point.wav"); 
+    sf::SoundBuffer buffer;
+  if (!buffer.loadFromFile("point.wav")) {
+    return 1;  
+  }
+
+  sf::Sound sound(buffer);
+  sound.play();
+  sf::sleep(sf::seconds(1)); 
 }
 
 int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
