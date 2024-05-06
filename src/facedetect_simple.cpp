@@ -7,7 +7,6 @@
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
-#include <SFML/Audio.hpp>
 
 using namespace std;
 using namespace cv;
@@ -33,25 +32,11 @@ int pontos;
 
 
 void playlose(){
-    sf::SoundBuffer buffer;
-  if (!buffer.loadFromFile("hit.wav")) {
-    return 1;  
-  }
-
-  sf::Sound sound(buffer);
-  sound.play();
-  sf::sleep(sf::seconds(1)); 
+    system("mplayer ../data/hit.wav"); 
 }
 
 void playwins(){
-    sf::SoundBuffer buffer;
-  if (!buffer.loadFromFile("point.wav")) {
-    return 1;  
-  }
-
-  sf::Sound sound(buffer);
-  sound.play();
-  sf::sleep(sf::seconds(1)); 
+    system("mplayer ../data/point.wav"); 
 }
 
 int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
@@ -206,6 +191,8 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
     Mat pipe4 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
     Rect pipeRect4 = Rect(y_up, x3, pipe4.rows, pipe4.cols);
+
+
     c++;
     
     if(c > 75)
@@ -233,26 +220,26 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     {
         x = 600;
         *pont++;
-        playwins();
+//        playwins();
     }   
     if(x1 == 0)
     {
         x1 = 600;
         *pont++;
-        playwins();
+  //      playwins();
     } 
     if(x2 == 0)
     {
         x2 = 600;
         *pont++;
-        playwins();
+    //    playwins();
     } 
     if(x3 == 0)
     {
         x3 = 600;
 
         *pont++;
-        playwins();
+      //  playwins();
     } 
 
 
@@ -278,7 +265,7 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
             cout << "VOCÊ PERDEU!" << endl;
             putText	(smallImg, "GAME OVER", Point(240, 200), FONT_HERSHEY_PLAIN,5, Scalar(255,255,255));
             //return 0;
-            playlose();
+        //    playlose();
         
         }
         rectangle( smallImg, Point(cvRound(r.x+60), cvRound(r.y+60)), Point(cvRound((r.x + 110)), cvRound((r.y + 110))), color, 3);
@@ -301,3 +288,4 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
     return 1;
 }
+message.txt
