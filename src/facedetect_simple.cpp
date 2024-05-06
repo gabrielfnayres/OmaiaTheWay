@@ -136,8 +136,6 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     drawTransparency(smallImg, orange, x, y_down);
     printf("orang::width: %d, height=%d\n", orange.cols, orange.rows);
     c++;
-    //cout << "valor de x: " << x << endl;
-    //cout << "valor de c: " << c << endl;
     
     if(c > 75)
     {
@@ -189,18 +187,17 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         Rect r = faces[i];
         if((r & orangeRect).area() > 10)
         {
-            color = Scalar(0,0,255);
+            color = Scalar(255,0,0);
+            //cout << "VOCÊ PERDEU!" << endl;
+            //putText	(smallImg, "GAME OVER", Point(240, 200), FONT_HERSHEY_PLAIN,5, Scalar(255,255,255));
+            //return 0;
         }   
         else
-        {   
-            color = Scalar(255,0,0);
-            cout << "VOCÊ PERDEU!" << endl;
-            putText	(smallImg, "GAME OVER", Point(280, 200), FONT_HERSHEY_PLAIN,7, Scalar(255,255,255));
-            return 0;
-        }
-        rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
+            color = Scalar(0,0,255);
+            
+        circle( smallImg, Point(cvRound(r.x + r.width-50), cvRound(r.y + r.height-50)), 3, color, 10);
     }
-    //cout << "Valor de pont: " << pont << endl;
+
     putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
 
     /* Desenha quadrados com transparencia
