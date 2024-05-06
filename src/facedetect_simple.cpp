@@ -34,6 +34,8 @@ int pontos;
 Menu menu;
 char resp;
 string nome;
+string numeracao;
+string usuarioTopo;
 
 
 void playlose(){
@@ -70,8 +72,8 @@ int main( int argc, const char** argv )
       size_t pos = texto.find_first_of(' ');
 
     if (pos != string::npos) {
-    string usuarioTopo = str.substr(0, pos);  
-    string numeracao = str.substr(pos + 1);
+     usuarioTopo = texto.substr(0, pos);  
+     numeracao = texto.substr(pos + 1);
 
     }
 
@@ -79,7 +81,7 @@ int main( int argc, const char** argv )
     
     
 
-    pontos = stoi(texto2); 
+    pontos = stoi(numeracao); 
 
 
 
@@ -108,7 +110,9 @@ int main( int argc, const char** argv )
     menu.exibir();
     resp = menu.lerResposta();
     if(resp != 89 || resp !=121){
-        break;
+
+        //break;
+
     }
     if(resp == 89 || resp == 121){
      cout<< "Digite o nome do seu usuário";
@@ -127,7 +131,7 @@ int main( int argc, const char** argv )
 
             t = detectAndDraw( frame, cascade, scale, tryflip );
             cout << "Pontuacao: "<< pont;
-            if(*pont > pontos){
+            if(pont > pontos){
 
                 stream.open("records.txt", ios_base::out);
                 novotexto = nome + " " + to_string(pont);
@@ -315,7 +319,7 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
     }
 
-    putText	(smallImg, to_string(*pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
+    putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
 
     // Desenha quadrados com transparencia
     // double alpha = 0.3;
@@ -331,4 +335,3 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
     return 1;
 }
-message.txt
