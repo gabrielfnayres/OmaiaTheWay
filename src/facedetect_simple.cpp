@@ -16,7 +16,7 @@ using namespace cv;
 
 
 
-
+int velo = 0;
 char r;
 int t = 0;
 int x = 600;
@@ -209,42 +209,47 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
     // Desenha uma imagem
     Mat pipe1 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
-    Rect pipeRect1 = Rect(y_down, (x-=2), pipe1.rows, pipe1.cols);
+    Rect pipeRect1 = Rect((x-=2+velo), y_down, pipe1.cols, pipe1.rows);
     drawTransparency(smallImg, pipe1, x, y_down);
     printf("orang::width: %d, height=%d\n", pipe1.rows, pipe1.cols);
 
     Mat pipe2 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
-    Rect pipeRect2 = Rect(y_up, x1, pipe2.rows, pipe2.cols);
+    Rect pipeRect2 = Rect(x1, y_up, pipe2.cols, pipe2.rows);
 
     Mat pipe3 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
-    Rect pipeRect3 = Rect(y_down, x2, pipe3.rows, pipe3.cols);
+    Rect pipeRect3 = Rect(x2, y_down, pipe3.cols, pipe3.rows);
 
     Mat pipe4 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
-    Rect pipeRect4 = Rect(y_up, x3, pipe4.rows, pipe4.cols);
+    Rect pipeRect4 = Rect(x3, y_up, pipe4.cols, pipe4.rows);
+
 
 
     c++;
+    cout << endl << "c = " << c << endl;
     
     if(c > 75)
     {
-        x1-=2;
+        x1-=2+velo;
         drawTransparency(smallImg, pipe2, x1, y_up);
         printf("pipe::width: %d, height=%d\n", pipe2.cols, pipe2.rows);
     }
 
     if(c > 150)
     {
-        x2-=2;
+        x2-=2+velo;
         drawTransparency(smallImg, pipe3, x2, y_down);
         printf("pipe::width: %d, height=%d\n", pipe3.cols, pipe3.rows);
     }
 
     if(c > 225)
     {
-        x3-=2;
+        x3-=2+velo;
         drawTransparency(smallImg, pipe4, x3, y_up);
         printf("pipe::width: %d, height=%d\n", pipe4.cols, pipe4.rows);
     }
+
+    if(c % 300 == 0)
+        velo++;
 
     if(x == 0)
     {
@@ -280,25 +285,33 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         //cout << "Rectangle - P1: " << Point(cvRound(r.x+60), cvRound(r.y+60)) << endl << endl;
         //cout << "Rectangle - P2: " << Point(cvRound(r.x+110), cvRound(r.y+110)) << endl << endl;
 
-        Rect pipeRect2 = Rect(y_up, x1, pipe2.rows, pipe2.cols);
+        //drawTransparency(smallImg, flappy, cvRound(r.x+85),cvRound(r.y+85));
 
-        Rect fac = Rect(cvRound(r.y+85),cvRound(r.x+85), 50, 50);
+
+        Rect fac = Rect(cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25), 50, 50);
+
+
 
         if(((fac & pipeRect1).area() > 1)||((fac & pipeRect2).area() > 1)||((fac & pipeRect3).area() > 1)||((fac & pipeRect4).area() > 1))
         {
             color = Scalar(0,0,255);
+            cout << "VOCÊ PERDEU!" << endl;
+            putText	(smallImg, "GAME OVER", Point(200, 200), FONT_HERSHEY_PLAIN, 3, Scalar(255,255,255));
         }   
 
         else
         {
             color = Scalar(255,0,0);
-            cout << "VOCÊ PERDEU!" << endl;
-            putText	(smallImg, "GAME OVER", Point(240, 200), FONT_HERSHEY_PLAIN,5, Scalar(255,255,255));
             //return 0;
         //    playlose();
         
         }
+
         rectangle( smallImg, Point(cvRound(r.x+60), cvRound(r.y+60)), Point(cvRound((r.x + 110)), cvRound((r.y + 110))), color, 3);
+
+        if(cvRound(r.x + 85) < 300 && cvRound(r.y + 85) < 300){
+          drawTransparency(smallImg, flappy, cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25));
+        }
 
     }
 
