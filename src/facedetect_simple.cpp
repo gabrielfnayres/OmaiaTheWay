@@ -109,12 +109,12 @@ int main( int argc, const char** argv )
     
     menu.exibir();
     resp = menu.lerResposta();
-    if(resp != 89 || resp !=121){
+    if(resp != 99 || resp !=67){
 
         //break;
 
     }
-    if(resp == 89 || resp == 121){
+    if(resp == 99 || resp == 67){
      cout<< "Digite o nome do seu usuário";
      cin >> nome;
      menu.setUsuario(nome);
