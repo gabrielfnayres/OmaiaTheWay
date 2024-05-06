@@ -2,12 +2,18 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/videoio.hpp"
+#include <stdlib.h>
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 
 using namespace std;
 using namespace cv;
+
+
+
+
 
 char r;
 int t = 0;
@@ -18,7 +24,20 @@ int x3 = 600;
 int y_down = 240;
 int y_up = 0;
 int c = 0;
-int pont = 0;
+int *pont = 0;
+fstream stream;
+string texto;
+string novotexto;
+int pontos;
+
+
+void playlose(){
+    system("hit.wav"); 
+}
+
+void playwins(){
+    system("point.wav"); 
+}
 
 int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
 
@@ -31,6 +50,26 @@ int main( int argc, const char** argv )
     bool tryflip;
     CascadeClassifier cascade;
     double scale;
+
+
+    stream.open("records.txt", ios_base::in);
+
+   if(!stream.is_open( )){
+    
+    cout<<"Não foi possível abrir arquivo";
+    return 0;
+    }
+
+
+    getline(stream, texto);
+
+      stream.close();
+
+    pontos = stoi(texto); 
+
+
+
+
 
     cascadeName = "haarcascade_frontalface_default.xml";
     scale = 1; // usar 1, 2, 4.
@@ -60,6 +99,14 @@ int main( int argc, const char** argv )
                 break;
 
             t = detectAndDraw( frame, cascade, scale, tryflip );
+            cout << "Pontuacao: "<< pont;
+            if(*pont > pontos){
+
+                stream.open("records.txt", ios_base::out);
+                novotexto = to_string(*pont);
+                stream << novotexto;
+                stream.close();
+            }
             if(t == 0)
                 break;
 
@@ -170,23 +217,29 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     if(x == 0)
     {
         x = 600;
-        pont++;
+        *pont++;
+        playwins();
     }   
     if(x1 == 0)
     {
         x1 = 600;
-        pont++;
+        *pont++;
+        playwins();
     } 
     if(x2 == 0)
     {
         x2 = 600;
-        pont++;
+        *pont++;
+        playwins();
     } 
     if(x3 == 0)
     {
         x3 = 600;
-        pont++;
-    }
+
+        *pont++;
+        playwins();
+    } 
+
 
     for ( size_t i = 0; i < faces.size(); i++ )
     {
@@ -203,18 +256,21 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         {
             color = Scalar(0,0,255);
         }   
+
         else
         {
             color = Scalar(255,0,0);
             cout << "VOCÊ PERDEU!" << endl;
             putText	(smallImg, "GAME OVER", Point(240, 200), FONT_HERSHEY_PLAIN,5, Scalar(255,255,255));
             //return 0;
-        }    
+            playlose();
+        
+        }
         rectangle( smallImg, Point(cvRound(r.x+60), cvRound(r.y+60)), Point(cvRound((r.x + 110)), cvRound((r.y + 110))), color, 3);
 
     }
 
-    putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
+    putText	(smallImg, to_string(*pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
 
     // Desenha quadrados com transparencia
     // double alpha = 0.3;
