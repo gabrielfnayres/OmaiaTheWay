@@ -24,7 +24,7 @@ float x3 = 600;
 int y_up = 0;
 
 int y_small_down = 240;
-int y_mid_down = 318;
+int y_mid_down = 269;
 int y_down = 240;
 
 int c = 0;
@@ -55,25 +55,19 @@ int main( int argc, const char** argv )
     CascadeClassifier cascade;
     double scale;
 
-
     stream.open("records.txt", ios_base::in);
 
-   if(!stream.is_open( )){
-    
+    if(!stream.is_open( )){
+     
     cout<<"Não foi possível abrir arquivo";
     return 0;
     }
-
 
     getline(stream, texto);
 
       stream.close();
 
     pontos = stoi(texto); 
-
-
-
-
 
     cascadeName = "haarcascade_frontalface_default.xml";
     scale = 1; // usar 1, 2, 4.
@@ -182,11 +176,11 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     printf( "detection time = %g ms\n", t*1000/getTickFrequency());
 
     // Desenha uma imagem
-    Mat pipe1 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
-    Rect pipeRect1 = Rect((x-=2*velo), y_down, pipe1.cols, pipe1.rows);
-    drawTransparency(smallImg, pipe1, x, y_down);
+    Mat pipe1 = cv::imread("../data/pipe_original_medio.png", IMREAD_UNCHANGED);
+    Rect pipeRect1 = Rect((x-=2*velo), y_mid_down, pipe1.cols, pipe1.rows);
+    drawTransparency(smallImg, pipe1, x, y_mid_down);
 
-    Mat pipe2 = cv::imread("../data/pipe_original_pequeno.png", IMREAD_UNCHANGED);
+    Mat pipe2 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
     Rect pipeRect2 = Rect(x1, y_up, pipe2.cols, pipe2.rows);
 
     Mat pipe3 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
@@ -228,7 +222,7 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     if(c % 100 == 0)
         velo+=0.1;
 
-    if(x < 15)
+    if(x < 10)
     {
         x = 600;
         pont++;
@@ -289,7 +283,6 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
     }   
    
-
     putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
 
     imshow("result", smallImg );
