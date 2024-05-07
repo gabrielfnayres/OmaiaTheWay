@@ -2,6 +2,7 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/videoio.hpp"
+#include <unistd.h>
 #include <stdlib.h>
 #include <iostream>
 #include <cstdlib>
@@ -11,18 +12,21 @@
 using namespace std;
 using namespace cv;
 
-
-
-
-int velo = 0;
+unsigned int microsec = 1000000;
+float velo = 1;
 char r;
 int t = 0;
-int x = 600;
-int x1 = 600;
-int x2 = 600;
-int x3 = 600;
-int y_down = 240;
+float x = 600;
+float x1 = 600;
+float x2 = 600;
+float x3 = 600;
+
 int y_up = 0;
+
+int y_small_down = 240;
+int y_mid_down = 318;
+int y_down = 240;
+
 int c = 0;
 int pont = 0;
 fstream stream;
@@ -99,7 +103,7 @@ int main( int argc, const char** argv )
                 break;
 
             t = detectAndDraw( frame, cascade, scale, tryflip );
-            cout << "Pontuacao: "<< pont;
+            cout << "Pontuacao: "<< pont << endl;
             if(pont > pontos){
 
                 stream.open("records.txt", ios_base::out);
@@ -179,11 +183,10 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
     // Desenha uma imagem
     Mat pipe1 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
-    Rect pipeRect1 = Rect((x-=2+velo), y_down, pipe1.cols, pipe1.rows);
+    Rect pipeRect1 = Rect((x-=2*velo), y_down, pipe1.cols, pipe1.rows);
     drawTransparency(smallImg, pipe1, x, y_down);
-    printf("orang::width: %d, height=%d\n", pipe1.rows, pipe1.cols);
 
-    Mat pipe2 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
+    Mat pipe2 = cv::imread("../data/pipe_original_pequeno.png", IMREAD_UNCHANGED);
     Rect pipeRect2 = Rect(x1, y_up, pipe2.cols, pipe2.rows);
 
     Mat pipe3 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
@@ -201,52 +204,53 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     
     if(c > 75)
     {
-        x1-=2+velo;
+        x1-=2*velo;
+        drawTransparency(smallImg, pipe2, x1, y_up);
+        printf("pipe::width: %d, height=%d\n", pipe2.cols, pipe2.rows);
         drawTransparency(smallImg, pipe2, x1, y_up);
         printf("pipe::width: %d, height=%d\n", pipe2.cols, pipe2.rows);
     }
 
     if(c > 150)
     {
-        x2-=2+velo;
+        x2-=2*velo;
         drawTransparency(smallImg, pipe3, x2, y_down);
         printf("pipe::width: %d, height=%d\n", pipe3.cols, pipe3.rows);
     }
 
     if(c > 225)
     {
-        x3-=2+velo;
+        x3-=2*velo;
         drawTransparency(smallImg, pipe4, x3, y_up);
         printf("pipe::width: %d, height=%d\n", pipe4.cols, pipe4.rows);
     }
 
-    if(c % 300 == 0)
-        velo++;
+    if(c % 100 == 0)
+        velo+=0.1;
 
-    if(x == 0)
+    if(x < 15)
     {
         x = 600;
         pont++;
-//        playwins();
+        //playwins();
     }   
-    if(x1 == 0)
+    if(x1 < 15)
     {
         x1 = 600;
         pont++;
-  //      playwins();
+        //playwins();
     } 
-    if(x2 == 0)
+    if(x2 < 15)
     {
         x2 = 600;
         pont++;
-    //    playwins();
+        //playwins();
     } 
-    if(x3 == 0)
+    if(x3 < 15)
     {
         x3 = 600;
-
         pont++;
-      //  playwins();
+        //playwins();
     } 
 
 
@@ -266,15 +270,15 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         {
           
             color = Scalar(0,0,255);
-            cout << "VOCÊ PERDEU!" << endl;
+            
             putText	(smallImg, "GAME OVER", Point(200, 200), FONT_HERSHEY_PLAIN, 3, Scalar(255,255,255));
+            //playlose();
+            //usleep(3*microsec);
         }   
 
         else
         {
             color = Scalar(255,0,0);
-            //return 0;
-        //    playlose();
         
         }
 
@@ -283,19 +287,11 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
           drawTransparency(smallImg, flappy, cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25));
         }
 
-    }
+    }   
+   
 
     putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
 
-    // Desenha quadrados com transparencia
-    // double alpha = 0.3;
-    // drawTransRect(smallImg, Scalar(0,255,0), alpha, Rect(  0, 0, 200, 400));
-
-    // Desenha um texto
-    //color = Scalar(0,0,255);
-    //putText	(smallImg, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
-
-    // Desenha o frame na tela
     imshow("result", smallImg );
     printf("image::width: %d, height=%d\n", smallImg.cols, smallImg.rows );
 
