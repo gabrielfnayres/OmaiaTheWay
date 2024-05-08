@@ -211,13 +211,13 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     Rect pipeRect1 = Rect((x-=2*velo), y_mid_down, pipe1.cols, pipe1.rows);
     drawTransparency(smallImg, pipe1, x, y_mid_down);
 
-    Mat pipe2 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
+    Mat pipe2 = cv::imread("../data/pipe_up.png", IMREAD_UNCHANGED);
     Rect pipeRect2 = Rect(x1, y_up, pipe2.cols, pipe2.rows);
 
     Mat pipe3 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
     Rect pipeRect3 = Rect(x2, y_down, pipe3.cols, pipe3.rows);
 
-    Mat pipe4 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
+    Mat pipe4 = cv::imread("../data/pipe_up.png", IMREAD_UNCHANGED);
     Rect pipeRect4 = Rect(x3, y_up, pipe4.cols, pipe4.rows);
 
     Mat flappy = cv::imread("../data/flappy.png", IMREAD_UNCHANGED);
