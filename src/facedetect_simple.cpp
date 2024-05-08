@@ -38,7 +38,7 @@ int pontos;
 Menu menu;
 char resp;
 string nome;
-string numeracao;
+string numeracao= " ";
 string usuarioTopo;
 
 
