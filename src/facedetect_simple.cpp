@@ -299,7 +299,7 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         rectangle( smallImg, Point(cvRound(fac.x), cvRound(fac.y)), Point(cvRound((fac.x + fac.width)), cvRound((fac.y + fac.height))), color, 3);
 
 
-        if(cvRound(r.x+(r.width/2) - 25) < 300 && cvRound(r.y+(r.width/2) - 25) < 300){
+        if(cvRound(r.x+(r.width/2) - 25) < 580 && cvRound(r.y+(r.width/2) - 25) < 580){
           drawTransparency(smallImg, flappy, cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25));
         }
 
