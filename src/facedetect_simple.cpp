@@ -247,7 +247,6 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         //playwins();
     } 
 
-
     for ( size_t i = 0; i < faces.size(); i++ )
     {
         Rect r = faces[i];
@@ -266,14 +265,13 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
             color = Scalar(0,0,255);
             
             putText	(smallImg, "GAME OVER", Point(200, 200), FONT_HERSHEY_PLAIN, 3, Scalar(255,255,255));
-            //playlose();
+            playlose();
             //usleep(3*microsec);
         }   
 
         else
         {
             color = Scalar(255,0,0);
-        
         }
 
         rectangle( smallImg, Point(cvRound(r.x+60), cvRound(r.y+60)), Point(cvRound((r.x + 110)), cvRound((r.y + 110))), color, 3);
