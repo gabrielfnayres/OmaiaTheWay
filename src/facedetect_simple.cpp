@@ -7,7 +7,9 @@ include "opencv2/objdetect.hpp"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <string>
 #include <fstream>
+#include "../includes/Menu.h"
 
 using namespace std;
 using namespace cv;
@@ -33,6 +35,11 @@ fstream stream;
 string texto;
 string novotexto;
 int pontos;
+Menu menu;
+char resp;
+string nome;
+string numeracao;
+string usuarioTopo;
 
 
 void playlose(){
@@ -65,9 +72,19 @@ int main( int argc, const char** argv )
 
     getline(stream, texto);
 
-      stream.close();
+      size_t pos = texto.find_first_of(' ');
 
-    pontos = stoi(texto); 
+    if (pos != string::npos) {
+     usuarioTopo = texto.substr(0, pos);  
+     numeracao = texto.substr(pos + 1);
+
+    }
+
+      stream.close();
+    
+    
+
+    pontos = stoi(numeracao); 
 
     cascadeName = "haarcascade_frontalface_default.xml";
     scale = 1; // usar 1, 2, 4.
@@ -87,6 +104,21 @@ int main( int argc, const char** argv )
         return 1;
     }
 
+    
+    
+    menu.exibir();
+    resp = menu.lerResposta();
+    if(resp != 99 && resp !=67){
+
+        //break;
+
+    }
+    if(resp == 99 || resp == 67){
+     cout<< "Digite o nome do seu usuário";
+     cin >> nome;
+     menu.setUsuario(nome);
+     
+
     if( capture.isOpened() ) {
         cout << "Video capturing has been started ..." << endl;
 
@@ -101,7 +133,7 @@ int main( int argc, const char** argv )
             if(pont > pontos){
 
                 stream.open("records.txt", ios_base::out);
-                novotexto = to_string(pont);
+                novotexto = nome + " " + to_string(pont);
                 stream << novotexto;
                 stream.close();
             }
@@ -113,6 +145,9 @@ int main( int argc, const char** argv )
                 break;
         }
     }
+
+    }
+    
 
     return 0;
 }
@@ -189,7 +224,9 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     Mat pipe4 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
     Rect pipeRect4 = Rect(x3, y_up, pipe4.cols, pipe4.rows);
 
+
     Mat flappy = cv::imread("../data/bird_sprite(1).png");
+
 
     c++;
     cout << endl << "c = " << c << endl;
@@ -249,6 +286,13 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     {
         Rect r = faces[i];
 
+
+        //cout << "Rectangle - P1: " << Point(cvRound(r.x+60), cvRound(r.y+60)) << endl << endl;
+        //cout << "Rectangle - P2: " << Point(cvRound(r.x+110), cvRound(r.y+110)) << endl << endl;
+
+        //drawTransparency(smallImg, flappy, cvRound(r.x+85),cvRound(r.y+85));
+
+
         Rect fac = Rect(cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25), 50, 50);
 
         if(((fac & pipeRect1).area() > 1)||((fac & pipeRect2).area() > 1)||((fac & pipeRect3).area() > 1)||((fac & pipeRect4).area() > 1))
@@ -267,8 +311,14 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         //rectangle( smallImg, Point(cvRound(r.x+60), cvRound(r.y+60)), Point(cvRound((r.x + 110)), cvRound((r.y + 110))), color, 3);
         rectangle( smallImg, Point(cvRound(fac.x), cvRound(fac.y)), Point(cvRound((fac.x + fac.width)), cvRound((fac.y + fac.height))), color, 3);
 
-    }   
-   
+
+        if(cvRound(r.x + 85) < 300 && cvRound(r.y + 85) < 300){
+          drawTransparency(smallImg, flappy, cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25));
+        }
+
+    }
+
+
     putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
 
     imshow("result", smallImg );
