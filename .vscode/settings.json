@@ -63,6 +63,7 @@
     "string_view": "cpp",
     "array": "cpp",
     "initializer_list": "cpp",
-    "utility": "cpp"
+    "utility": "cpp",
+    "fstream": "cpp"
   }
 }

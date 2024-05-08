@@ -6,10 +6,9 @@ using namespace std;
 
 void Menu:: exibir(){
 
-cout << "BEM-VINDO AO FLAPPY BIRD";
-cout << "DIGITE C PARA CONTINUAR";
-cout << "DIGITE Q PARA DESISTIR";
-
+cout << "<========== BEM-VINDO AO FLAPPY BIRD ==========>" << endl;
+cout << "DIGITE C PARA CONTINUAR" << endl;
+cout << "DIGITE Q PARA DESISTIR" << endl;
 
 }
 

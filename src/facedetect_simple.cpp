@@ -80,9 +80,7 @@ int main( int argc, const char** argv )
 
     }
 
-      stream.close();
-    
-    
+    stream.close();
 
     pontos = stoi(numeracao); 
 
@@ -114,7 +112,7 @@ int main( int argc, const char** argv )
 
     }
     if(resp == 99 || resp == 67){
-     cout<< "Digite o nome do seu usuário";
+     cout<< "Digite o nome do seu usuário:" << endl;
      cin >> nome;
      menu.setUsuario(nome);
      
@@ -222,9 +220,7 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     Mat pipe4 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
     Rect pipeRect4 = Rect(x3, y_up, pipe4.cols, pipe4.rows);
 
-
-    Mat flappy = cv::imread("../data/bird_sprite(1).png");
-
+    Mat flappy = cv::imread("../data/flappy.png", IMREAD_UNCHANGED);
 
     c++;
     cout << endl << "c = " << c << endl;
@@ -284,13 +280,6 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     {
         Rect r = faces[i];
 
-
-        //cout << "Rectangle - P1: " << Point(cvRound(r.x+60), cvRound(r.y+60)) << endl << endl;
-        //cout << "Rectangle - P2: " << Point(cvRound(r.x+110), cvRound(r.y+110)) << endl << endl;
-
-        //drawTransparency(smallImg, flappy, cvRound(r.x+85),cvRound(r.y+85));
-
-
         Rect fac = Rect(cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25), 50, 50);
 
         if(((fac & pipeRect1).area() > 1)||((fac & pipeRect2).area() > 1)||((fac & pipeRect3).area() > 1)||((fac & pipeRect4).area() > 1))
@@ -298,7 +287,7 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
             color = Scalar(0,0,255);
             
             putText	(smallImg, "GAME OVER", Point(200, 200), FONT_HERSHEY_PLAIN, 3, Scalar(255,255,255));
-            playlose();
+            //playlose();
             //usleep(3*microsec);
         }   
 
@@ -306,16 +295,15 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         {
             color = Scalar(255,0,0);
         }
-        //rectangle( smallImg, Point(cvRound(r.x+60), cvRound(r.y+60)), Point(cvRound((r.x + 110)), cvRound((r.y + 110))), color, 3);
+
         rectangle( smallImg, Point(cvRound(fac.x), cvRound(fac.y)), Point(cvRound((fac.x + fac.width)), cvRound((fac.y + fac.height))), color, 3);
 
 
-        if(cvRound(r.x + 85) < 300 && cvRound(r.y + 85) < 300){
+        if(cvRound(r.x+(r.width/2) - 25) < 300 && cvRound(r.y+(r.width/2) - 25) < 300){
           drawTransparency(smallImg, flappy, cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25));
         }
 
     }
-
 
     putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
 
