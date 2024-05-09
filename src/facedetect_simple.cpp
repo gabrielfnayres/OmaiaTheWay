@@ -44,11 +44,13 @@ string usuarioTopo;
 
 
 void playlose(){
+
     system("mplayer ../data/hit.wav >/dev/null 2>&1 &"); 
 }
 
 void playwins(){
     system("mplayer ../data/point.wav >/dev/null 2>&1 &"); 
+
 }
 
 int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
@@ -218,11 +220,13 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
             drawTransparency(smallImg, pipe2, x1, y_up);
         }
 
+
         if(c > 150)
         {
             x2-=2*velo;
             drawTransparency(smallImg, pipe3, x2, y_down);
         }
+
 
         if(c > 225)
         {
@@ -238,6 +242,7 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
             x = 600;
             pont++;
             playwins();
+
         }   
         if(x1 < 15)
         {
@@ -262,7 +267,9 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         {
             Rect r = faces[i];
 
+
             Rect fac = Rect(cvRound(r.x+(r.width/2) - 18),cvRound(r.y+ ((r.height/2)+2) - 25), 45, 45);
+
 
             if(((fac & pipeRect1).area() > 3)||((fac & pipeRect2).area() > 3)||((fac & pipeRect3).area() > 3)||((fac & pipeRect4).area() > 3))
             {
