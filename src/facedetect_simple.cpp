@@ -109,7 +109,7 @@ int main( int argc, const char** argv )
         if(resp == 99 || resp == 67)
         {
             lose = false;
-            cout<< "Digite o seu usuário:" << endl;
+            cout<< "Digite seu nome de usuário:" << endl;
             cin >> nome;
             menu.setUsuario(nome);
 
