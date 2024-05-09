@@ -11,6 +11,8 @@
 #include <fstream>
 #include "../includes/Menu.h"
 
+
+
 using namespace std;
 using namespace cv;
 
@@ -38,16 +40,18 @@ int pontos;
 Menu menu;
 char resp;
 string nome;
-string numeracao= " ";
+string numeracao;
 string usuarioTopo;
 
 
+
+
 void playlose(){
-    system("mplayer ../data/hit.wav"); 
+    system("mplayer ../data/hit.wav >/dev/null 2>&1 &"); 
 }
 
 void playwins(){
-    system("mplayer ../data/point.wav"); 
+    system("mplayer ../data/point.wav >/dev/null 2>&1 &"); 
 }
 
 int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
@@ -80,7 +84,9 @@ int main( int argc, const char** argv )
 
     }
 
-    stream.close();
+      stream.close();
+    
+    
 
     pontos = stoi(numeracao); 
 
@@ -112,7 +118,7 @@ int main( int argc, const char** argv )
 
     }
     if(resp == 99 || resp == 67){
-     cout<< "Digite o nome do seu usuário:" << endl;
+     cout<< "Digite o nome do seu usuário";
      cin >> nome;
      menu.setUsuario(nome);
      
@@ -145,6 +151,9 @@ int main( int argc, const char** argv )
     }
 
     }
+    
+     
+
     return 0;
 }
 
@@ -211,16 +220,18 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     Rect pipeRect1 = Rect((x-=2*velo), y_mid_down, pipe1.cols, pipe1.rows);
     drawTransparency(smallImg, pipe1, x, y_mid_down);
 
-    Mat pipe2 = cv::imread("../data/pipe_up.png", IMREAD_UNCHANGED);
+    Mat pipe2 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
     Rect pipeRect2 = Rect(x1, y_up, pipe2.cols, pipe2.rows);
 
     Mat pipe3 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
     Rect pipeRect3 = Rect(x2, y_down, pipe3.cols, pipe3.rows);
 
-    Mat pipe4 = cv::imread("../data/pipe_up.png", IMREAD_UNCHANGED);
+    Mat pipe4 = cv::imread("../data/pipe_original.png", IMREAD_UNCHANGED);
     Rect pipeRect4 = Rect(x3, y_up, pipe4.cols, pipe4.rows);
 
-    Mat flappy = cv::imread("../data/flappy.png", IMREAD_UNCHANGED);
+
+    Mat flappy = cv::imread("../data/bird_sprite(1).png");
+
 
     c++;
     cout << endl << "c = " << c << endl;
@@ -255,30 +266,37 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     {
         x = 600;
         pont++;
-        //playwins();
+        playwins();
     }   
     if(x1 < 15)
     {
         x1 = 600;
         pont++;
-        //playwins();
+        playwins();
     } 
     if(x2 < 15)
     {
         x2 = 600;
         pont++;
-        //playwins();
+        playwins();
     } 
     if(x3 < 15)
     {
         x3 = 600;
         pont++;
-        //playwins();
+        playwins();
     } 
 
     for ( size_t i = 0; i < faces.size(); i++ )
     {
         Rect r = faces[i];
+
+
+        //cout << "Rectangle - P1: " << Point(cvRound(r.x+60), cvRound(r.y+60)) << endl << endl;
+        //cout << "Rectangle - P2: " << Point(cvRound(r.x+110), cvRound(r.y+110)) << endl << endl;
+
+        //drawTransparency(smallImg, flappy, cvRound(r.x+85),cvRound(r.y+85));
+
 
         Rect fac = Rect(cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25), 50, 50);
 
@@ -287,7 +305,8 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
             color = Scalar(0,0,255);
             
             putText	(smallImg, "GAME OVER", Point(200, 200), FONT_HERSHEY_PLAIN, 3, Scalar(255,255,255));
-            //playlose();
+            playlose();
+          
             //usleep(3*microsec);
         }   
 
@@ -295,15 +314,16 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         {
             color = Scalar(255,0,0);
         }
-
+        //rectangle( smallImg, Point(cvRound(r.x+60), cvRound(r.y+60)), Point(cvRound((r.x + 110)), cvRound((r.y + 110))), color, 3);
         rectangle( smallImg, Point(cvRound(fac.x), cvRound(fac.y)), Point(cvRound((fac.x + fac.width)), cvRound((fac.y + fac.height))), color, 3);
 
 
-        if(cvRound(r.x+(r.width/2) - 25) < 580 && cvRound(r.y+(r.width/2) - 25) < 580){
+        if(cvRound(r.x + 85) < 300 && cvRound(r.y + 85) < 300){
           drawTransparency(smallImg, flappy, cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25));
         }
 
     }
+
 
     putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
 
