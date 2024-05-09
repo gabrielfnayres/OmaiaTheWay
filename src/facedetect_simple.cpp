@@ -43,11 +43,11 @@ string usuarioTopo;
 
 
 void playlose(){
-    system("mplayer ../data/hit.wav"); 
+      system("mplayer ../data/hit.wav >/dev/null 2>&1 &");
 }
 
 void playwins(){
-    system("mplayer ../data/point.wav"); 
+  system("mplayer ../data/point.wav >/dev/null 2>&1 &");
 }
 
 int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
@@ -255,25 +255,25 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     {
         x = 600;
         pont++;
-        //playwins();
+        playwins();
     }   
     if(x1 < 15)
     {
         x1 = 600;
         pont++;
-        //playwins();
+        playwins();
     } 
     if(x2 < 15)
     {
         x2 = 600;
         pont++;
-        //playwins();
+        playwins();
     } 
     if(x3 < 15)
     {
         x3 = 600;
         pont++;
-        //playwins();
+        playwins();
     } 
 
     for ( size_t i = 0; i < faces.size(); i++ )
@@ -287,8 +287,8 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
             color = Scalar(0,0,255);
             
             putText	(smallImg, "GAME OVER", Point(200, 200), FONT_HERSHEY_PLAIN, 3, Scalar(255,255,255));
-            //playlose();
-            //usleep(3*microsec);
+            playlose();
+            usleep(3*microsec);
         }   
 
         else
@@ -296,7 +296,7 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
             color = Scalar(255,0,0);
         }
 
-        rectangle( smallImg, Point(cvRound(fac.x), cvRound(fac.y)), Point(cvRound((fac.x + fac.width)), cvRound((fac.y + fac.height))), color, 1);
+ //       rectangle( smallImg, Point(cvRound(fac.x), cvRound(fac.y)), Point(cvRound((fac.x + fac.width)), cvRound((fac.y + fac.height))), color, 1);
 
 
         if(cvRound(r.x+(r.width/2) - 25) < 580 && cvRound(r.y+(r.width/2) - 25) < 580){
