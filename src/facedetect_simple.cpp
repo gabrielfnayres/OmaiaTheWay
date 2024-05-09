@@ -112,37 +112,37 @@ int main( int argc, const char** argv )
 
     }
     if(resp == 99 || resp == 67){
-     cout<< "Digite o nome do seu usuário:" << endl;
-     cin >> nome;
-     menu.setUsuario(nome);
-     
+        cout<< "Digite o nome do seu usuário:" << endl;
+        cin >> nome;
+        menu.setUsuario(nome);
+        
 
-    if( capture.isOpened() ) {
-        cout << "Video capturing has been started ..." << endl;
+        if( capture.isOpened() ) {
+            cout << "Video capturing has been started ..." << endl;
 
-        while (1)
-        {
-            capture >> frame;
-            if( frame.empty() )
-                break;
+            while (1)
+            {
+                capture >> frame;
+                if( frame.empty() )
+                    break;
 
-            t = detectAndDraw( frame, cascade, scale, tryflip );
-            cout << "Pontuacao: "<< pont << endl;
-            if(pont > pontos){
+                t = detectAndDraw( frame, cascade, scale, tryflip );
+                cout << "Pontuacao: "<< pont << endl;
+                if(pont > pontos){
 
-                stream.open("records.txt", ios_base::out);
-                novotexto = nome + " " + to_string(pont);
-                stream << novotexto;
-                stream.close();
+                    stream.open("records.txt", ios_base::out);
+                    novotexto = nome + " " + to_string(pont);
+                    stream << novotexto;
+                    stream.close();
+                }
+                if(t == 0)
+                    break;
+
+                char c = (char)waitKey(10);
+                if( c == 27 || c == 'q' || c == 'Q' )
+                    break;
             }
-            if(t == 0)
-                break;
-
-            char c = (char)waitKey(10);
-            if( c == 27 || c == 'q' || c == 'Q' )
-                break;
         }
-    }
 
     }
     return 0;
@@ -280,9 +280,9 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     {
         Rect r = faces[i];
 
-        Rect fac = Rect(cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25), 50, 50);
+        Rect fac = Rect(cvRound(r.x+(r.width/2) - 18),cvRound(r.y+ ((r.height/2)+2) - 25), 45, 45);
 
-        if(((fac & pipeRect1).area() > 1)||((fac & pipeRect2).area() > 1)||((fac & pipeRect3).area() > 1)||((fac & pipeRect4).area() > 1))
+        if(((fac & pipeRect1).area() > 3)||((fac & pipeRect2).area() > 3)||((fac & pipeRect3).area() > 3)||((fac & pipeRect4).area() > 3))
         {
             color = Scalar(0,0,255);
             
@@ -296,7 +296,7 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
             color = Scalar(255,0,0);
         }
 
-        rectangle( smallImg, Point(cvRound(fac.x), cvRound(fac.y)), Point(cvRound((fac.x + fac.width)), cvRound((fac.y + fac.height))), color, 3);
+        rectangle( smallImg, Point(cvRound(fac.x), cvRound(fac.y)), Point(cvRound((fac.x + fac.width)), cvRound((fac.y + fac.height))), color, 1);
 
 
         if(cvRound(r.x+(r.width/2) - 25) < 580 && cvRound(r.y+(r.width/2) - 25) < 580){
