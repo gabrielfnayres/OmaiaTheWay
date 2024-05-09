@@ -14,6 +14,7 @@
 using namespace std;
 using namespace cv;
 
+bool lose = false;
 unsigned int microsec = 1000000;
 float velo = 1;
 char r;
@@ -107,6 +108,7 @@ int main( int argc, const char** argv )
         resp = menu.lerResposta();
         if(resp == 99 || resp == 67)
         {
+            lose = false;
             cout<< "Digite o seu usuário:" << endl;
             cin >> nome;
             menu.setUsuario(nome);
@@ -130,8 +132,6 @@ int main( int argc, const char** argv )
 
                     if(t == 0)
                     {
-                        cout << "VOCÊ PERDEU!" << endl << endl;
-                        char c = 27;
                         break;
                     }
 
@@ -168,7 +168,6 @@ void drawTransRect(Mat frame, Scalar color, double alpha, Rect region) {
 int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
 {
     double t = 0;
-    bool lose = false;
     vector<Rect> faces;
     Mat gray, smallImg;
     Scalar color = Scalar(255,0,0);
@@ -187,13 +186,12 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         |CASCADE_SCALE_IMAGE,
         Size(40, 40) );
     t = (double)getTickCount() - t;
-    printf( "detection time = %g ms\n", t*1000/getTickFrequency());
-
+    //printf( "detection time = %g ms\n", t*1000/getTickFrequency());
+    cout << ".................." << endl;
 
     // Desenha uma imagem
     Mat pipe1 = cv::imread("../data/pipe_original_medio.png", IMREAD_UNCHANGED);
-    Rect pipeRect1 = Rect((x-=2*velo), y_mid_down, pipe1.cols, pipe1.rows);
-    drawTransparency(smallImg, pipe1, x, y_mid_down);
+    Rect pipeRect1 = Rect(x, y_mid_down, pipe1.cols, pipe1.rows);
 
     Mat pipe2 = cv::imread("../data/pipe_up.png", IMREAD_UNCHANGED);
     Rect pipeRect2 = Rect(x1, y_up, pipe2.cols, pipe2.rows);
@@ -206,88 +204,98 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
     Mat flappy = cv::imread("../data/flappy.png", IMREAD_UNCHANGED);
 
-    c++;
-    
-    if(c > 75)
+    if(!lose)
     {
-        x1-=2*velo;
-        drawTransparency(smallImg, pipe2, x1, y_up);
-    }
+        c++;
 
-    if(c > 150)
-    {
-        x2-=2*velo;
-        drawTransparency(smallImg, pipe3, x2, y_down);
-    }
-
-    if(c > 225)
-    {
-        x3-=2*velo;
-        drawTransparency(smallImg, pipe4, x3, y_up);
-    }
-
-    if(c % 100 == 0)
-        velo+=0.1;
-
-    if(x < 10)
-    {
-        x = 600;
-        pont++;
-        //playwins();
-    }   
-    if(x1 < 15)
-    {
-        x1 = 600;
-        pont++;
-        //playwins();
-    } 
-    if(x2 < 15)
-    {
-        x2 = 600;
-        pont++;
-        //playwins();
-    } 
-    if(x3 < 15)
-    {
-        x3 = 600;
-        pont++;
-        //playwins();
-    } 
-
-    for ( size_t i = 0; i < faces.size(); i++ )
-    {
-        Rect r = faces[i];
-
-        Rect fac = Rect(cvRound(r.x+(r.width/2) - 18),cvRound(r.y+ ((r.height/2)+2) - 25), 45, 45);
-
-        if(((fac & pipeRect1).area() > 3)||((fac & pipeRect2).area() > 3)||((fac & pipeRect3).area() > 3)||((fac & pipeRect4).area() > 3))
+        if(c > 0)
         {
-            color = Scalar(0,0,255);
-            
-            putText	(smallImg, "GAME OVER", Point(200, 200), FONT_HERSHEY_PLAIN, 3, Scalar(255,255,255));
-            playlose();
-            //usleep(3*microsec);
-            c = 0;
-            float x = 600;
-            float x1 = 600;
-            float x2 = 600;
-            float x3 = 600;
-            return 0;
+            x-=2*velo;
+            drawTransparency(smallImg, pipe1, x, y_mid_down);
+        }
+        if(c > 75)
+        {
+            x1-=2*velo;
+            drawTransparency(smallImg, pipe2, x1, y_up);
+        }
+
+        if(c > 150)
+        {
+            x2-=2*velo;
+            drawTransparency(smallImg, pipe3, x2, y_down);
+        }
+
+        if(c > 225)
+        {
+            x3-=2*velo;
+            drawTransparency(smallImg, pipe4, x3, y_up);
+        }
+
+        if(c % 100 == 0)
+            velo+=0.1;
+
+        if(x < 10)
+        {
+            x = 600;
+            pont++;
+            playwins();
         }   
-
-        else
+        if(x1 < 15)
         {
-            color = Scalar(255,0,0);
-        }
+            x1 = 600;
+            pont++;
+            //playwins();
+        } 
+        if(x2 < 15)
+        {
+            x2 = 600;
+            pont++;
+            //playwins();
+        } 
+        if(x3 < 15)
+        {
+            x3 = 600;
+            pont++;
+            //playwins();
+        } 
 
-        rectangle( smallImg, Point(cvRound(fac.x), cvRound(fac.y)), Point(cvRound((fac.x + fac.width)), cvRound((fac.y + fac.height))), color, 1);
+        for ( size_t i = 0; i < faces.size(); i++ )
+        {
+            Rect r = faces[i];
 
-        if(cvRound(r.x+(r.width/2) - 25) < 580 && cvRound(r.y+(r.width/2) - 25) < 580){
-          drawTransparency(smallImg, flappy, cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25));
+            Rect fac = Rect(cvRound(r.x+(r.width/2) - 18),cvRound(r.y+ ((r.height/2)+2) - 25), 45, 45);
+
+            if(((fac & pipeRect1).area() > 3)||((fac & pipeRect2).area() > 3)||((fac & pipeRect3).area() > 3)||((fac & pipeRect4).area() > 3))
+            {
+                color = Scalar(0,0,255);
+                lose = true;
+                playlose();
+            }   
+
+            else
+            {
+                color = Scalar(255,0,0);
+            }
+
+            //rectangle( smallImg, Point(cvRound(fac.x), cvRound(fac.y)), Point(cvRound((fac.x + fac.width)), cvRound((fac.y + fac.height))), color, 1);
+
+            if(cvRound(r.x+(r.width/2) - 25) < 580 && cvRound(r.y+(r.width/2) - 25) < 580){
+                drawTransparency(smallImg, flappy, cvRound(r.x+(r.width/2) - 25),cvRound(r.y+ (r.height/2) - 25));
+            }
         }
+            putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255));
     }
 
-    putText	(smallImg, to_string(pont), Point(320, 50), FONT_HERSHEY_PLAIN,3, Scalar(255,255,255)); // fonte
+    else 
+    {
+        putText	(smallImg, "GAME OVER", Point(85, 200), FONT_HERSHEY_PLAIN,5, Scalar(255,255,255));
+        putText	(smallImg, "Pressione Q para retornar ao menu.", Point(15, 250), FONT_HERSHEY_PLAIN,2, Scalar(255,255,255));
+        x = 600;
+        x1 = 600;
+        x2 = 600;
+        x3 = 600;
+        c = 0;
+    }   
 
     imshow("result", smallImg );
 
