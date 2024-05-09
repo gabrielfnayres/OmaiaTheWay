@@ -44,11 +44,11 @@ string usuarioTopo;
 
 
 void playlose(){
-    system("mplayer ../data/hit.wav"); 
+    system("mplayer ../data/hit.wav >/dev/null 2>&1 &"); 
 }
 
 void playwins(){
-    system("mplayer ../data/point.wav"); 
+    system("mplayer ../data/point.wav >/dev/null 2>&1 &"); 
 }
 
 int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
@@ -189,7 +189,6 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     //printf( "detection time = %g ms\n", t*1000/getTickFrequency());
     cout << ".................." << endl;
 
-    // Desenha uma imagem
     Mat pipe1 = cv::imread("../data/pipe_original_medio.png", IMREAD_UNCHANGED);
     Rect pipeRect1 = Rect(x, y_mid_down, pipe1.cols, pipe1.rows);
 
@@ -244,19 +243,19 @@ int detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         {
             x1 = 600;
             pont++;
-            //playwins();
+            playwins();
         } 
         if(x2 < 15)
         {
             x2 = 600;
             pont++;
-            //playwins();
+            playwins();
         } 
         if(x3 < 15)
         {
             x3 = 600;
             pont++;
-            //playwins();
+            playwins();
         } 
 
         for ( size_t i = 0; i < faces.size(); i++ )
